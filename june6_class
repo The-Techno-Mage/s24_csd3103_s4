@@ -1,0 +1,38 @@
+
+createStudent.js
+
+const mongoose = require('mongoose');
+const { Student } = require('./models');
+
+// MongoDB Cloud URI
+const uri = "mongodb://localhost:27017/college?retryWrites=true&w=majority";
+
+// Connect to MongoDB
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB Local Host'))
+  .catch((err) => console.error('Connection error', err));
+
+const createStudent = async () => {
+  const student = new Student({
+    studentId: 'S005',
+    firstName: 'Jane',
+    lastName: 'Doe',
+    program: 'Biology',
+    term: 'Spring'
+  });
+
+  try {
+    const savedStudent = await student.save();
+    console.log('Student saved:', savedStudent);
+  } catch (err) {
+    console.error('Error saving student:', err);
+  } finally {
+    mongoose.connection.close().then(() => {
+      console.log('Mongoose connection closed');
+    }).catch(err => {
+      console.error('Error closing connection:', err);
+    });
+  }
+};
+
+createStudent();
